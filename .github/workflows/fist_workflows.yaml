@@ -30,6 +30,7 @@ jobs:
         wget -q https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
         tar -zxvf allure-2.29.0.tgz -C /opt/
         echo "/opt/allure-2.29.0/bin" >> $GITHUB_PATH
+        export PATH="/opt/allure-2.29.0/bin:$PATH"
         allure --version
 
     - name: Гоняем тесты
