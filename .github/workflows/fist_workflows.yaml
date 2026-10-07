@@ -10,6 +10,8 @@ on:
 jobs:
   start_test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
     - name: Копируем тесты
@@ -27,17 +29,17 @@ jobs:
 
     - name: Ставим Allure CLI
       run: |
-        wget -q https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
-        tar -zxvf allure-2.29.0.tgz -C /opt/
-        echo "/opt/allure-2.29.0/bin" >> $GITHUB_PATH
-        export PATH="/opt/allure-2.29.0/bin:$PATH"
-        allure --version
+        ALLURE_VERSION=2.32.0
+        curl -Lo /tmp/allure.tgz "https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz"
+        sudo tar -xzf /tmp/allure.tgz -C /opt/
+        echo "/opt/allure-${ALLURE_VERSION}/bin" >> "$GITHUB_PATH"
 
     - name: Гоняем тесты
       run: |
         pytest --alluredir=./allure-results
 
     - name: Генерим отчёт
+      if: always()
       run: |
         allure generate ./allure-results --clean -o ./allure-report
 
@@ -50,7 +52,7 @@ jobs:
         retention-days: 14
 
     - name: Публикуем на GitHub Pages
-      if: github.ref == 'refs/heads/main'
+      if: always() && github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
