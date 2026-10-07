@@ -6,3 +6,4 @@ pydantic_core==2.46.3
 Pygments==2.20.0
 pytest==9.0.3
 requests==2.33.1
+pytest-xdist==3.8.0
