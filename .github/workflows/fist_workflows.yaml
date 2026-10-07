@@ -1,4 +1,5 @@
-name: Start test
+name: Python Autotests
+
 on:
   push:
     branches:
@@ -8,10 +9,8 @@ on:
       - main
 
 jobs:
-  start_test:
+  test:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
     - name: Копируем тесты
@@ -27,34 +26,16 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Ставим Allure CLI
-      run: |
-        ALLURE_VERSION=2.32.0
-        curl -Lo /tmp/allure.tgz "https://github.com/allure-framework/allure2/releases/download/${ALLURE_VERSION}/allure-${ALLURE_VERSION}.tgz"
-        sudo tar -xzf /tmp/allure.tgz -C /opt/
-        echo "/opt/allure-${ALLURE_VERSION}/bin" >> "$GITHUB_PATH"
-
     - name: Гоняем тесты
       run: |
-        pytest --alluredir=./allure-results
+        pytest --junitxml=report.xml --html=report.html --self-contained-html
 
-    - name: Генерим отчёт
-      if: always()
-      run: |
-        allure generate ./allure-results --clean -o ./allure-report
-
-    - name: Отчет (артефакт)
+    - name: Сохраняем отчёты
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: test-report
-        path: allure-report/
+        name: test-reports
+        path: |
+          report.xml
+          report.html
         retention-days: 14
-
-    - name: Публикуем на GitHub Pages
-      if: always() && github.ref == 'refs/heads/main'
-      uses: peaceiris/actions-gh-pages@v4
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./allure-report
-        publish_branch: gh-pages
