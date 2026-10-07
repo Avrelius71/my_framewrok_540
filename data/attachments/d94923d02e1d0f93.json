@@ -1,0 +1,14 @@
+{
+    "bookingid": 2965,
+    "booking": {
+        "firstname": "Kim",
+        "lastname": "Rodriguez",
+        "totalprice": 160,
+        "depositpaid": false,
+        "bookingdates": {
+            "checkin": "2018-01-01",
+            "checkout": "2019-01-01"
+        },
+        "additionalneeds": "Any special home."
+    }
+}
