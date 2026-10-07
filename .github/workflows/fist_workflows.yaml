@@ -6,6 +6,7 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
   start_test:
     runs-on: ubuntu-latest
@@ -30,6 +31,9 @@ jobs:
     - name: Гоняем тесты
       run: |
         pytest --alluredir=./allure-results
+
+    - name: Генерим отчёт
+      run: |
         allure generate ./allure-results --clean -o ./allure-report
 
     - name: Отчет
