@@ -26,7 +26,11 @@ jobs:
         pip install -r requirements.txt
 
     - name: Ставим Allure CLI
-      uses: simple-elf/allure-report-action@v1.9
+      run: |
+        wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
+        tar -zxvf allure-2.29.0.tgz -C /opt/
+        ln -s /opt/allure-2.29.0/bin/allure /usr/bin/allure
+        allure --version
 
     - name: Гоняем тесты
       run: |
